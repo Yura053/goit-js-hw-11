@@ -4,10 +4,6 @@ import SimpleLightbox from 'simplelightbox';
 let lightbox;
 
 export function renderImages(images, gallery) {
-  if (images.length === 0) {
-    gallery.innerHTML = '';
-    return;
-  }
   const fragment = document.createDocumentFragment();
 
   images.forEach(hit => {
@@ -16,7 +12,6 @@ export function renderImages(images, gallery) {
 
     const link = document.createElement('a');
     link.href = hit.largeImageURL;
-    link.dataset.caption = hit.tags;
 
     const img = document.createElement('img');
     img.src = hit.webformatURL;
@@ -25,18 +20,18 @@ export function renderImages(images, gallery) {
     const stats = document.createElement('div');
     stats.classList.add('image-stats');
     stats.innerHTML = `
-          <div><p class="stat-title">Likes</p><p class="stat-text">${hit.likes}</p></div>
-          <div><p class="stat-title">Views</p><p class="stat-text">${hit.views}</p></div>
-          <div><p class="stat-title">Comments</p><p class="stat-text">${hit.comments}</p></div>
-          <div><p class="stat-title">Downloads</p><p class="stat-text">${hit.downloads}</p></div>
-        `;
+      <div><p>Likes</p><p>${hit.likes}</p></div>
+      <div><p>Views</p><p>${hit.views}</p></div>
+      <div><p>Comments</p><p>${hit.comments}</p></div>
+      <div><p>Downloads</p><p>${hit.downloads}</p></div>
+    `;
 
     link.appendChild(img);
     item.appendChild(link);
     item.appendChild(stats);
     fragment.appendChild(item);
   });
-  clearGallery(gallery);
+
   gallery.appendChild(fragment);
 
   if (lightbox) {
@@ -51,4 +46,12 @@ export function renderImages(images, gallery) {
 
 export function clearGallery(gallery) {
   gallery.innerHTML = '';
+}
+
+export function showLoader(loader) {
+  loader.style.display = 'inline-flex';
+}
+
+export function hideLoader(loader) {
+  loader.style.display = 'none';
 }

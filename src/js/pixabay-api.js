@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
-
 export function fetchOnQuery(query) {
   return axios
     .get('https://pixabay.com/api/', {
@@ -15,13 +12,6 @@ export function fetchOnQuery(query) {
       },
     })
     .then(response => {
-      if (response.data.hits.length === 0) {
-        return Promise.reject('No images found');
-      }
-      return response.data;
-    })
-    .catch(error => {
-      console.log('Помилка запиту :>> ', error);
-      return Promise.reject(error);
+      return response.data; //  просто повертаємо дані
     });
 }

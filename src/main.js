@@ -2,69 +2,59 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 import { fetchOnQuery } from './js/pixabay-api';
-import { renderImages, clearGallery } from './js/render-functions';
+import {
+  renderImages,
+  clearGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions';
 
 const form = document.querySelector('.form');
 const searchInp = document.querySelector('input[name="search-text"]');
-const submitBtn = document.querySelector('button[type="submit"]');
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
 
 form.addEventListener('submit', event => {
   event.preventDefault();
+
   const query = searchInp.value.trim();
+
   if (query === '') {
     clearGallery(gallery);
+
     iziToast.error({
-      title: '',
-      titleColor: '#FFFFFF',
-      iconColor: '#fffff',
-      iconUrl: '../img/svg/wn-ic.svg',
-      messageColor: '#FFFFFF',
-      backgroundColor: '#ef4040',
-      position: 'topRight',
-      progressBar: true,
-      progressBarColor: ' #B51B1B',
-      closeOnClick: true,
-      timeout: 3500,
       message: 'Будь ласка, заповніть поле для вводу!',
+      position: 'topRight',
     });
+
     return;
   }
-  //  ОЦЕ ТРЕБА ДОДАТИ
-  clearGallery(gallery);
 
-  loader.style.display = 'inline-flex';
-
-  ///
+  clearGallery(gallery); //  очищаємо перед запитом
+  showLoader(loader); //  показуємо loader
 
   fetchOnQuery(query)
     .then(data => {
+      //  якщо нічого не знайдено
       if (data.hits.length === 0) {
-        clearGallery(gallery);
-      } else {
-        renderImages(data.hits, gallery);
+        iziToast.error({
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          position: 'topRight',
+        });
+        return;
       }
+
+      renderImages(data.hits, gallery);
     })
-    .catch(error => {
-      clearGallery(gallery);
+    .catch(() => {
+      //  справжня помилка (сервер / інтернет)
       iziToast.error({
-        title: '',
-        titleColor: '#FFFFFF',
-        iconColor: '#fffff',
-        iconUrl: '../img/svg/wn-ic.svg',
-        messageColor: '#FFFFFF',
-        backgroundColor: '#ef4040',
+        message: 'Something went wrong. Try again later.',
         position: 'topRight',
-        progressBar: true,
-        progressBarColor: ' #B51B1B',
-        closeOnClick: true,
-        timeout: 3500,
-        message:
-          'Sorry, there are no images matching your search query. Please try again!',
       });
     })
     .finally(() => {
-      loader.style.display = 'none';
+      hideLoader(loader); //  ховаємо loader
     });
 });
