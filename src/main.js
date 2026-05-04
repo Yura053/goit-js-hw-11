@@ -31,8 +31,12 @@ form.addEventListener('submit', event => {
     });
     return;
   }
+  //  ОЦЕ ТРЕБА ДОДАТИ
+  clearGallery(gallery);
 
   loader.style.display = 'inline-flex';
+
+  ///
 
   fetchOnQuery(query)
     .then(data => {
